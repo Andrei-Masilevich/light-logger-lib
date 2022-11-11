@@ -4,6 +4,7 @@
 
 #include <logger/platform_config.h>
 #include <logger/time_helper.h>
+#include <logger/asserts.h>
 
 #if defined(SERVER_LIB_PLATFORM_LINUX)
 #include <unistd.h>
@@ -34,6 +35,7 @@ namespace tests {
 
         void create_log_file(const std::string& test_name)
         {
+#if defined(SERVER_LIB_PLATFORM_LINUX)
             std::string file_name = boost::filesystem::unique_path().generic_string();
             file_name += '.';
             file_name += test_name;
@@ -47,12 +49,16 @@ namespace tests {
                 BOOST_REQUIRE(!err.empty());
             }
             BOOST_REQUIRE(freopen(_temp_to_log.generic_string().c_str(), "w", stdout) != NULL);
+#else // SERVER_LIB_PLATFORM_LINUX
+            SRV_ERROR("Standard output device redirection trick is not supported");
+#endif // !SERVER_LIB_PLATFORM_LINUX
         }
 
         std::string close_log_file()
         {
             if (_origin_stdout > 0)
             {
+#if defined(SERVER_LIB_PLATFORM_LINUX)
                 fflush(stdout);
                 fclose(stdout);
                 stdout = fdopen(_origin_stdout, "w");
@@ -60,6 +66,9 @@ namespace tests {
                 std::ios_base::sync_with_stdio(false);
                 _origin_stdout = -1;
                 return _temp_to_log.generic_string();
+#else // SERVER_LIB_PLATFORM_LINUX
+                SRV_ERROR("Standard output device redirection trick is not supported");
+#endif // !SERVER_LIB_PLATFORM_LINUX
             }
             return {};
         }
