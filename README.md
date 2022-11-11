@@ -1,6 +1,6 @@
 # Light Logger Lib
 
-This library is simplifaed version of **Barbacoa Server Lib** logging feature. 
+This library is simplified version of **Barbacoa Server Lib** logging feature. 
 Removed **Boost** dependencies (except for unit-tests purposes).
 
 * Some logging features was removed as was implemented with **Boost.Log**!
