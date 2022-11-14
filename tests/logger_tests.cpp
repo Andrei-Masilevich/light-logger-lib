@@ -95,10 +95,6 @@ namespace tests {
         BOOST_REQUIRE_EQUAL(rows, 6);
     }
 
-// TODO: issue: We got empty file after the first success std::cout substitution :((
-//              tests work fine only one by one.
-//              Are these fucking std::streambuf private flags???
-#if 0
     BOOST_AUTO_TEST_CASE(short_format_check)
     {
         print_current_test_name();
@@ -284,7 +280,6 @@ namespace tests {
 
         BOOST_REQUIRE_EQUAL(rows, 6);
     }
-#endif
 
     BOOST_AUTO_TEST_SUITE_END()
 

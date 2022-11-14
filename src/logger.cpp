@@ -123,8 +123,7 @@ logger::log_context::log_context()
 
 void logger::add_cli_destination()
 {
-    static bool added = false;
-    if (added)
+    if (_added_cli_destination)
         return;
 
     auto to_cli_level = [](level lv) {
@@ -195,13 +194,12 @@ void logger::add_cli_destination()
     };
     add_destination(std::move(cli_write));
 
-    added = true;
+    _added_cli_destination = true;
 }
 
 void logger::add_syslog_destination()
 {
-    static bool added = false;
-    if (added)
+    if (_added_syslog_destination)
         return;
 
 #if defined(SERVER_LIB_PLATFORM_LINUX)
@@ -243,10 +241,19 @@ void logger::add_syslog_destination()
     SRV_ERROR("Not implemented");
 #endif // !SERVER_LIB_PLATFORM_LINUX
 
-    added = true;
+    _added_syslog_destination = true;
 }
 
 logger::logger() { _logs_on = false; }
+
+logger& logger::init_cli_log(const char* time_format)
+{
+    _time_format = time_format;
+    add_cli_destination();
+
+    unlock();
+    return *this;
+}
 
 logger& logger::init_sys_log()
 {
@@ -256,15 +263,6 @@ logger& logger::init_sys_log()
     openlog(NULL, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL2);
 #endif
     add_syslog_destination();
-
-    unlock();
-    return *this;
-}
-
-logger& logger::init_cli_log(const char* time_format)
-{
-    _time_format = time_format;
-    add_cli_destination();
 
     unlock();
     return *this;

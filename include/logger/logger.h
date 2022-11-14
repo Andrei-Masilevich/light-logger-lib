@@ -83,8 +83,8 @@ protected:
     friend class singleton<logger>;
 
 public:
-    logger& init_sys_log();
     logger& init_cli_log(const char* time_format = logger::default_time_format);
+    logger& init_sys_log();
 
     logger& set_level(int filter = logger::level_debug);
     logger& set_level_from_environment(const char* var_name);
@@ -115,11 +115,14 @@ public:
     }
 
 private:
-    void add_syslog_destination();
     void add_cli_destination();
+    void add_syslog_destination();
 
 private:
     std::vector<log_handler_type> _appenders;
+    bool _added_cli_destination = false;
+    bool _added_syslog_destination = false;
+
     std::string _time_format = logger::default_time_format;
     int _level_filter = logger::level_trace;
     int _details_filter = logger::details_without_app_name;
