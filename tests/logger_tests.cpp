@@ -87,9 +87,8 @@ namespace tests {
         std::ifstream input(close_log_file());
 
         size_t rows = 0;
-        for (std::string line; std::getline(input, line);)
+        for (std::string line; std::getline(input, line); ++rows)
         {
-            ++rows;
         }
 
         BOOST_REQUIRE_EQUAL(rows, 6);
@@ -114,7 +113,7 @@ namespace tests {
         std::ifstream input(close_log_file());
 
         size_t rows = 0;
-        for (std::string line; std::getline(input, line);)
+        for (std::string line; std::getline(input, line); ++rows)
         {
             switch (rows)
             {
@@ -145,8 +144,6 @@ namespace tests {
             }
             default:;
             }
-
-            ++rows;
         }
 
         BOOST_REQUIRE_EQUAL(rows, 5);
@@ -171,7 +168,7 @@ namespace tests {
         std::ifstream input(close_log_file());
 
         size_t rows = 0;
-        for (std::string line; std::getline(input, line);)
+        for (std::string line; std::getline(input, line); ++rows)
         {
             switch (rows)
             {
@@ -192,8 +189,6 @@ namespace tests {
             }
             default:;
             }
-
-            ++rows;
         }
 
         BOOST_REQUIRE_EQUAL(rows, 3);
@@ -229,7 +224,7 @@ namespace tests {
         std::ifstream input(close_log_file());
 
         size_t rows = 0;
-        for (std::string line; std::getline(input, line);)
+        for (std::string line; std::getline(input, line); ++rows)
         {
             if (!app_name.empty())
             {
@@ -274,8 +269,6 @@ namespace tests {
 
             BOOST_REQUIRE(line.find(now_date) != std::string::npos);
             BOOST_REQUIRE(line.find(__FILE__) != std::string::npos);
-
-            ++rows;
         }
 
         BOOST_REQUIRE_EQUAL(rows, 6);
