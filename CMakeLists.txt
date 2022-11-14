@@ -49,7 +49,7 @@ if ( LIB_BUILD_TESTS )
             message(FATAL_ERROR "BOOST_VERSION variable is required!")
         endif()
         set(Boost_NO_SYSTEM_PATHS ON)
-        set(Boost_DIR "${BOOST_ROOT}/cmake/Boost-${BOOST_VERSION}")
+        set(Boost_DIR "${BOOST_ROOT}/lib/cmake/Boost-${BOOST_VERSION}")
         set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include")
         set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
 
