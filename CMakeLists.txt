@@ -37,14 +37,24 @@ option ( LIB_BUILD_TESTS "Build tests (ON OR OFF). This option makes sense only 
 option ( LIB_BUILD_EXAMPLES "Build examples (ON OR OFF). This option makes sense only for integrated library!" OFF)
 
 # If this lib is not a sub-project:
-if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
+if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
     set(LIB_BUILD_TESTS ON)
     set(LIB_BUILD_EXAMPLES ON)
 endif()
 
 if ( LIB_BUILD_TESTS )
 
-    SET(BOOST_VERSION_MIN "1.65" CACHE STRING "Minimum required Boost Lib version")
+    if (NOT "${BOOST_ROOT}" STREQUAL "")
+        if ("${BOOST_VERSION}" STREQUAL "")
+            message(FATAL_ERROR "BOOST_VERSION variable is required!")
+        endif()
+        set(Boost_NO_SYSTEM_PATHS ON)
+        set(Boost_DIR "${BOOST_ROOT}/cmake/Boost-${BOOST_VERSION}")
+
+        message(">> Custom Boost reference will be configured from ${Boost_DIR}")
+    else()
+        SET(BOOST_VERSION_MIN "1.65" CACHE STRING "Minimum required Boost Lib version")
+    endif()
 
     set(BOOST_COMPONENTS)
     list(APPEND BOOST_COMPONENTS system
@@ -59,7 +69,12 @@ if ( LIB_BUILD_TESTS )
     set( Boost_USE_STATIC_LIBS ON CACHE STRING "ON or OFF" )
     set( Boost_USE_MULTITHREADED ON CACHE STRING "ON or OFF" )
 
-    find_package(Boost ${BOOST_VERSION_MIN} REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+    if ("${BOOST_ROOT}" STREQUAL "")
+        find_package(Boost ${BOOST_VERSION_MIN} REQUIRED ${BOOST_COMPONENTS})
+    else()
+        # Configure by direct reference
+        find_package(Boost ${BOOST_VERSION} EXACT COMPONENTS ${BOOST_COMPONENTS} NO_DEFAULT_PATH)
+    endif()
 
     include_directories( ${Boost_INCLUDE_DIR} )
 
